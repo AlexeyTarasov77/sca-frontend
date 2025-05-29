@@ -4,7 +4,11 @@ import { CatListItem } from './cat';
 import { formatSalary } from './utils';
 
 export function CatsDashboard() {
-  const cats = use(catsApi.getAll())
+  const resp = use(catsApi.getAll())
+  if (!resp.success) {
+    return <p className="text-red-500 text-lg mx-auto my-auto">{resp.message}</p>
+  }
+  const cats = resp.data.objects
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-6">
@@ -30,7 +34,7 @@ export function CatsDashboard() {
                 </thead>
                 <tbody>
                   {cats.map((cat) => (
-                    <CatListItem initialData={cat} />
+                    <CatListItem key={cat.id} initialData={cat} />
                   ))}
                 </tbody>
               </table>
@@ -47,7 +51,7 @@ export function CatsDashboard() {
               <div className="flex items-center justify-between text-sm text-gray-600">
                 <span>Total Cats: {cats.length}</span>
                 <span>
-                  Total Payroll: {formatSalary(cats.reduce((sum, cat) => sum + cat.salary, 0))}
+                  Total Payroll: {formatSalary(cats.reduce((sum, cat) => sum + parseInt(cat.salary), 0))}
                 </span>
               </div>
             </div>

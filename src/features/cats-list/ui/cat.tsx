@@ -3,10 +3,12 @@ import { Edit2, Trash2, Check, X } from 'lucide-react';
 import { useState } from "react";
 import { ICat } from "../types";
 import { formatSalary } from './utils';
+import { catsApi } from '../api';
 
 export function CatListItem({ initialData }: { initialData: ICat }) {
   const [cat, setCat] = useState<ICat | null>(initialData)
   const [editSalary, setEditSalary] = useState('');
+  const [error, setError] = useState<string | null>(null)
 
   if (!cat) return null
 
@@ -14,13 +16,18 @@ export function CatListItem({ initialData }: { initialData: ICat }) {
     setEditSalary(cat.salary.toString());
   };
 
-  const handleEditSave = () => {
+  const handleEditSave = async () => {
     const newSalary = parseInt(editSalary);
     if (isNaN(newSalary) || newSalary < 0) {
       alert('Please enter a valid salary amount');
       return;
     }
-    setCat({ ...cat, salary: newSalary })
+    const resp = await catsApi.updateCat(cat.id, { salary: newSalary })
+    if (!resp.success) {
+      setError(resp.message)
+      return
+    }
+    setCat({ ...cat, salary: String(newSalary) })
     setEditSalary('');
   };
 
@@ -28,12 +35,18 @@ export function CatListItem({ initialData }: { initialData: ICat }) {
     setEditSalary('');
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this cat?')) {
+      const resp = await catsApi.deleteCat(cat.id)
+      if (!resp.success) {
+        setError(resp.message)
+        return
+      }
       setCat(null)
     }
   };
 
+  error && alert(error)
   return (
     <tr key={cat.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
       <td className="py-4 px-6">
@@ -51,7 +64,7 @@ export function CatListItem({ initialData }: { initialData: ICat }) {
               type="number"
               value={editSalary}
               onChange={(e) => setEditSalary(e.target.value)}
-              className="w-24 px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-24 px-3 py-1 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="Salary"
             />
             <button
@@ -69,7 +82,7 @@ export function CatListItem({ initialData }: { initialData: ICat }) {
           </div>
         ) : (
           <span className="font-semibold text-green-600">
-            {formatSalary(cat.salary)}
+            {formatSalary(parseInt(cat.salary))}
           </span>
         )}
       </td>

@@ -1,19 +1,14 @@
-import { DELETE, GET } from "@/src/shared/api/client";
-import { ICat } from "../types";
+import { DELETE, GET, PATCH } from "@/src/shared/api/client";
+import { ICat, IListCatsResponse, IUpdateCatPayload } from "../types";
 
 export const catsApi = {
-  getAll: async (): Promise<ICat[]> => {
-    const resp = await GET<ICat[]>("/cats/");
-    if (!resp.success) {
-      throw new Error(resp.message)
-    }
-    return resp.data;
+  getAll: async () => {
+    return await GET<IListCatsResponse>("/cats/");
   },
   deleteCat: async (catId: string) => {
-    const resp = await DELETE("/cats/" + catId);
-    if (!resp.success) {
-      throw new Error(resp.message)
-    }
-    return resp.data;
+    return await DELETE("/cats/" + catId);
+  },
+  updateCat: async (catId: string, data: IUpdateCatPayload) => {
+    return await PATCH("/cats/" + catId, data);
   }
 }

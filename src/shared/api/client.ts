@@ -1,5 +1,5 @@
 import { SERVER_URL } from "../constants";
-import { APIResponse } from "./types";
+import { APIResponse, IResponseFailure, IResponseSuccess } from "./types";
 
 export const authTokenKey = "authToken";
 
@@ -12,23 +12,43 @@ export async function sendReq<T>(
     url = path.toString();
   }
   const resp = await fetch(url, options);
+  if (resp.status === 204) {
+    return { success: true, data: null as any, status: resp.status }
+  }
   const data = await resp.json();
-  return { ...data, status: resp.status };
+  if (!resp.ok) {
+    return { message: data.detail, success: false, status: resp.status }
+  }
+  return { data, success: true, status: resp.status }
 }
 
 export async function GET<T>(path: string | URL): APIResponse<T> {
   return await sendReq(path);
 }
 
+async function reqWithData<T>(
+  path: string | URL,
+  data: object,
+  reqMethod: string
+): APIResponse<T> {
+  return await sendReq(path, {
+    method: reqMethod,
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" },
+  });
+}
 export async function POST<T>(
   path: string | URL,
   data: object,
 ): APIResponse<T> {
-  return await sendReq(path, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" },
-  });
+  return await reqWithData(path, data, "POST")
+}
+
+export async function PATCH<T>(
+  path: string | URL,
+  data: object,
+): APIResponse<T> {
+  return await reqWithData(path, data, "PATCH")
 }
 
 export async function DELETE(
