@@ -1,7 +1,8 @@
 import { use } from 'react';
-import { catsApi } from '../api';
 import { CatListItem } from './cat';
 import { formatSalary } from './utils';
+import { catsApi } from '@/src/entities/cats/api/cats-api';
+import Link from 'next/link';
 
 export function CatsDashboard() {
   const resp = use(catsApi.getAll())
@@ -15,9 +16,9 @@ export function CatsDashboard() {
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-8 py-6">
-            <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+            <Link href="/" className="text-3xl font-bold text-white flex items-center gap-3 transition-colors hover:text-cyan-300">
               🐱 Spy Cats
-            </h1>
+            </Link>
             <p className="text-purple-100 mt-2">Manage your spy cats</p>
           </div>
 

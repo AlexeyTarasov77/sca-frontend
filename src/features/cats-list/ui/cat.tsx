@@ -1,18 +1,18 @@
 "use client"
 import { Edit2, Trash2, Check, X } from 'lucide-react';
 import { useState } from "react";
-import { ICat } from "../types";
 import { formatSalary } from './utils';
-import { catsApi } from '../api';
+import { ICatPartial } from '@/src/entities/cats/model/types';
+import { catsApi } from '@/src/entities/cats/api/cats-api';
 
-export function CatListItem({ initialData }: { initialData: ICat }) {
-  const [cat, setCat] = useState<ICat | null>(initialData)
+export function CatListItem({ initialData }: { initialData: ICatPartial }) {
+  const [cat, setCat] = useState<ICatPartial | null>(initialData)
   const [editSalary, setEditSalary] = useState('');
   const [error, setError] = useState<string | null>(null)
 
   if (!cat) return null
 
-  const handleEditStart = (cat: ICat) => {
+  const handleEditStart = (cat: ICatPartial) => {
     setEditSalary(cat.salary.toString());
   };
 

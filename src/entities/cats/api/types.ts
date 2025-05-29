@@ -1,13 +1,7 @@
-
-export interface ICat {
-  id: string;
-  name: string;
-  breed_name: string;
-  salary: string
-}
+import { ICatPartial } from "../model/types"
 
 export interface IListCatsResponse {
-  objects: ICat[]
+  objects: ICatPartial[]
   first_page: number
   last_page: number
   total_records: number
@@ -18,3 +12,5 @@ export interface IListCatsResponse {
 export interface IUpdateCatPayload {
   salary: number
 }
+
+export interface ICreateCatPayload extends Omit<ICatPartial, "id"> { }

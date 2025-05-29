@@ -73,6 +73,8 @@ export function UIButton({
   const sizeClass = sizeClasses[size];
   const btnClassName = `${baseClasses} ${variantClass} ${sizeClass} ${className}`
   if (props.asLink) {
+    delete props.asLink
+    console.log(props)
     return <Link className={btnClassName} {...props}>{children}</Link>
   }
   props = props as IButtonProps
@@ -86,34 +88,3 @@ export function UIButton({
   );
 };
 
-
-
-
-// interface IButtonProps extends
-//   React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
-//   variant?: "primary" | "outline";
-//   color?: "blue" | "red" | "green" | "yellow" | "teal" | "lime" | "purple"
-//   isGradient?: boolean
-//   size?: "sm" | "md" | "lg" | "xl"
-// }
-//
-// export default function UIButton({ children, disabled, variant, color, size, isGradient, ...rest }: IButtonProps) {
-//   const buttonColors = {
-//     blue: ""
-//   }
-//   size = size || "md"
-//   const buttonSizes: Record<typeof size, string> = {
-//     sm: "px-3 py-2 text-sm",
-//     md: "px-5 py-2.5 text-sm",
-//     lg: "px-5 py-3 text-base",
-//     xl: "px-6 py-3.5 text-base"
-//   }
-//   const classes: string[] = [
-//     "font-medium rounded-lg text-center focus:outline-none",
-//     buttonSizes[size],
-//   ]
-//   if (disabled) {
-//     classes.push("cursor-not-allowed")
-//   }
-//   return <button className="text-base">{children}</button>
-// }
